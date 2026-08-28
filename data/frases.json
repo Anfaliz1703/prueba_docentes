@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "secuencia": 1,
+    "issue": "Anfaliz1703/prueba_docentes#1",
+    "texto": "Una consigna clara le ahorra dudas al estudiante y le deja más energía para pensar.",
+    "timestamp": "2026-08-28T17:00:30-05:00",
+    "horaLocal": "17:00:30",
+    "estado": "✓"
+  }
+]
