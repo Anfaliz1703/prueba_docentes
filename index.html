@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0b1020" />
   <title>Bitácora · Agente Frase Minuto</title>
   <meta name="description" content="Bitácora pública de las frases agregadas por el agente asíncrono de GitHub Copilot." />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=20260828-2" />
 </head>
 <body>
   <main class="app-shell">
@@ -14,13 +14,13 @@
       <div>
         <p class="eyebrow">GITHUB COPILOT · AGENTE ASÍNCRONO</p>
         <h1>Bitácora de Frase Minuto</h1>
-        <p class="intro">Esta página no genera frases por sí sola. Solo muestra entradas que existen realmente en <code>data/frases.json</code>.</p>
+        <p class="intro">Esta página no genera frases por sí sola. Solo muestra entradas que existen realmente en <code>data/frases.json</code> dentro de la rama de trabajo del agente.</p>
       </div>
 
       <div class="agent-state" aria-live="polite">
         <span class="pulse" aria-hidden="true"></span>
         <div>
-          <strong id="sourceStatus">Buscando actividad del agente…</strong>
+          <strong id="sourceStatus">Conectando con la rama del agente…</strong>
           <span id="syncStatus">Sincronizando con GitHub</span>
         </div>
       </div>
@@ -29,10 +29,10 @@
     <section class="latest-card" aria-live="polite" aria-labelledby="latestTitle">
       <div class="card-topline">
         <span id="latestTitle">ÚLTIMA FRASE REGISTRADA</span>
-        <span id="latestBadge" class="badge">Esperando</span>
+        <span id="latestBadge" class="badge">Conectando</span>
       </div>
-      <blockquote id="latestQuote">Aún no hay frases registradas por el agente.</blockquote>
-      <div id="latestMeta" class="latest-meta">Cuando Copilot agregue la primera entrada aparecerá aquí con su hora real.</div>
+      <blockquote id="latestQuote">Consultando la actividad real de Copilot…</blockquote>
+      <div id="latestMeta" class="latest-meta">La página leerá directamente la rama viva del agente.</div>
     </section>
 
     <section class="history-section" aria-labelledby="historyTitle">
@@ -41,18 +41,18 @@
           <p class="eyebrow">EVIDENCIA VERSIONADA</p>
           <h2 id="historyTitle">Historial de frases agregadas</h2>
         </div>
-        <span id="entryCount" class="counter">0 frases</span>
+        <span id="entryCount" class="counter">—</span>
       </div>
 
       <ol id="historyList" class="history-list">
-        <li class="empty-state">Esperando la primera acción del agente.</li>
+        <li class="empty-state">Consultando commits del agente…</li>
       </ol>
     </section>
 
     <section class="monitor-panel" aria-label="Estado de actualización">
       <div>
         <span class="monitor-label">Próxima consulta a GitHub</span>
-        <strong id="countdown">60 s</strong>
+        <strong id="countdown">30 s</strong>
       </div>
       <div>
         <span class="monitor-label">Última sincronización</span>
@@ -66,6 +66,6 @@
     </footer>
   </main>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=20260828-2"></script>
 </body>
 </html>
