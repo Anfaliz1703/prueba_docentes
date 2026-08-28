@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#111827" />
+  <title>Un minuto para enseñar</title>
+  <meta name="description" content="Una frase para docentes cada minuto." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="quote-card" aria-live="polite">
+      <div class="eyebrow">UN MINUTO PARA ENSEÑAR</div>
+
+      <div class="quote-mark" aria-hidden="true">“</div>
+      <blockquote id="quote" class="quote">Cargando una idea para docentes…</blockquote>
+      <p id="author" class="author">— Comunidad docente</p>
+
+      <div class="timer-wrap">
+        <div class="timer-label">
+          <span>Siguiente frase</span>
+          <strong id="countdown">60 s</strong>
+        </div>
+        <div class="progress" aria-hidden="true">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="newQuote" class="btn btn-primary" type="button">Otra frase</button>
+        <button id="copyQuote" class="btn btn-secondary" type="button">Copiar</button>
+      </div>
+
+      <p id="status" class="status" role="status"></p>
+    </section>
+
+    <footer>
+      <span>Una pausa breve. Una idea útil.</span>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
