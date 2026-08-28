@@ -64,21 +64,47 @@ function normalizePayload(payload) {
     });
 }
 
-async function fetchJson(url) {
-  const response = await fetch(url, { cache: "no-store" });
+async function fetchJson(url, options = {}) {
+  const response = await fetch(url, {
+    cache: "no-store",
+    headers: {
+      Accept: "application/vnd.github+json",
+      ...options.headers
+    }
+  });
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   return response.json();
 }
 
-async function loadAgentEntries() {
-  const rawUrl = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${AGENT_BRANCH}/data/frases.json?t=${Date.now()}`;
-  const payload = await fetchJson(rawUrl);
-  return normalizePayload(payload);
+function decodeGithubContent(content) {
+  const clean = String(content || "").replace(/\n/g, "");
+  const binary = atob(clean);
+  const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+  return new TextDecoder("utf-8").decode(bytes);
+}
+
+async function loadAgentEntriesFromApi() {
+  const branch = encodeURIComponent(AGENT_BRANCH);
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/data/frases.json?ref=${branch}&_=${Date.now()}`;
+  const file = await fetchJson(url);
+
+  if (!file?.content) throw new Error("La API no devolvió contenido");
+
+  const decoded = decodeGithubContent(file.content);
+  return normalizePayload(JSON.parse(decoded));
+}
+
+async function loadAgentEntriesFromRaw() {
+  const url = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${AGENT_BRANCH}/data/frases.json?_=${Date.now()}`;
+  const response = await fetch(url, { cache: "no-store" });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return normalizePayload(await response.json());
 }
 
 async function loadMainEntries() {
-  const payload = await fetchJson(`data/frases.json?t=${Date.now()}`);
-  return normalizePayload(payload);
+  const response = await fetch(`data/frases.json?_=${Date.now()}`, { cache: "no-store" });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return normalizePayload(await response.json());
 }
 
 function render(entries, source) {
@@ -128,19 +154,26 @@ async function sync() {
   if (isLoading) return;
   isLoading = true;
   refreshNowBtn.disabled = true;
-  syncStatusEl.textContent = "Leyendo directamente la rama viva del agente…";
+  syncStatusEl.textContent = "Consultando el último commit del agente…";
 
   try {
     let entries;
+
     try {
-      entries = await loadAgentEntries();
-      render(entries, "Copilot · rama activa");
-      syncStatusEl.textContent = "Datos en vivo desde la rama de Copilot";
-    } catch (agentError) {
-      entries = await loadMainEntries();
-      render(entries, "main · GitHub Pages");
-      syncStatusEl.textContent = "Rama del agente no disponible; mostrando main";
-      console.warn("No se pudo leer la rama del agente", agentError);
+      entries = await loadAgentEntriesFromApi();
+      render(entries, "Copilot · GitHub Contents API");
+      syncStatusEl.textContent = "Sincronizado con la rama viva del agente";
+    } catch (apiError) {
+      try {
+        entries = await loadAgentEntriesFromRaw();
+        render(entries, "Copilot · raw fallback");
+        syncStatusEl.textContent = "API limitada; usando respaldo de GitHub";
+      } catch (rawError) {
+        entries = await loadMainEntries();
+        render(entries, "main · GitHub Pages");
+        syncStatusEl.textContent = "Rama del agente no disponible; mostrando main";
+        console.warn("API y raw no disponibles", apiError, rawError);
+      }
     }
 
     lastSyncEl.textContent = localClock();
