@@ -27,9 +27,9 @@ function localClock(date = new Date()) {
 }
 
 function parseEntry(entry, index) {
-  const text = entry?.text ?? entry?.frase ?? entry?.quote ?? entry?.mensaje ?? "";
+  const text = entry?.text ?? entry?.texto ?? entry?.frase ?? entry?.quote ?? entry?.mensaje ?? "";
   const timestamp = entry?.timestamp ?? entry?.fecha ?? entry?.created_at ?? null;
-  let time = entry?.localTime ?? entry?.hora ?? entry?.time ?? "";
+  let time = entry?.localTime ?? entry?.horaLocal ?? entry?.hora ?? entry?.time ?? "";
 
   if (!time && timestamp) {
     const parsed = new Date(timestamp);
@@ -37,7 +37,7 @@ function parseEntry(entry, index) {
   }
 
   return {
-    seq: Number(entry?.seq ?? entry?.numero ?? entry?.id ?? index + 1),
+    seq: Number(entry?.seq ?? entry?.secuencia ?? entry?.numero ?? entry?.id ?? index + 1),
     text: String(text).trim(),
     timestamp,
     time: String(time || "hora no registrada"),
