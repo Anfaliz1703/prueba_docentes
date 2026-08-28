@@ -1,1 +1,42 @@
-[]
+[
+  {
+    "secuencia": 1,
+    "issue": "Anfaliz1703/prueba_docentes#1",
+    "texto": "Una consigna clara le ahorra dudas al estudiante y le deja más energía para pensar.",
+    "timestamp": "2026-08-28T17:00:30-05:00",
+    "horaLocal": "17:00:30",
+    "estado": "✓"
+  },
+  {
+    "secuencia": 2,
+    "issue": "Anfaliz1703/prueba_docentes#1",
+    "texto": "La participación mejora cuando la pregunta invita a comparar, no solo a recordar.",
+    "timestamp": "2026-08-28T17:02:14-05:00",
+    "horaLocal": "17:02:14",
+    "estado": "✓"
+  },
+  {
+    "secuencia": 3,
+    "issue": "Anfaliz1703/prueba_docentes#1",
+    "texto": "Explicar menos y escuchar mejor suele revelar dónde empieza el aprendizaje real.",
+    "timestamp": "2026-08-28T17:03:30-05:00",
+    "horaLocal": "17:03:30",
+    "estado": "✓"
+  },
+  {
+    "secuencia": 4,
+    "issue": "Anfaliz1703/prueba_docentes#1",
+    "texto": "Una evidencia pequeña pero bien explicada enseña más que una tarea extensa sin reflexión.",
+    "timestamp": "2026-08-28T17:04:48-05:00",
+    "horaLocal": "17:04:48",
+    "estado": "✓"
+  },
+  {
+    "secuencia": 5,
+    "issue": "Anfaliz1703/prueba_docentes#1",
+    "texto": "Cuando la clase conecta ideas nuevas con ejemplos cercanos, la comprensión gana profundidad.",
+    "timestamp": "2026-08-28T17:06:01-05:00",
+    "horaLocal": "17:06:01",
+    "estado": "✓"
+  }
+]

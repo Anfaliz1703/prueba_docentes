@@ -14,25 +14,19 @@
       <div class="eyebrow">UN MINUTO PARA ENSEÑAR</div>
 
       <div class="quote-mark" aria-hidden="true">“</div>
-      <blockquote id="quote" class="quote">Cargando una idea para docentes…</blockquote>
-      <p id="author" class="author">— Comunidad docente</p>
+      <blockquote id="quote" class="quote">Cargando la frase más reciente…</blockquote>
+      <p id="author" class="author">— Bitácora versionada de frases docentes</p>
+      <p id="latestEntry" class="latest-entry" role="status"></p>
 
-      <div class="timer-wrap">
-        <div class="timer-label">
-          <span>Siguiente frase</span>
-          <strong id="countdown">60 s</strong>
+      <section class="history" aria-labelledby="historyTitle">
+        <div class="history-header">
+          <h2 id="historyTitle">Últimas inserciones</h2>
+          <span id="historyCount" class="history-count"></span>
         </div>
-        <div class="progress" aria-hidden="true">
-          <div id="progressBar" class="progress-bar"></div>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button id="newQuote" class="btn btn-primary" type="button">Otra frase</button>
-        <button id="copyQuote" class="btn btn-secondary" type="button">Copiar</button>
-      </div>
-
-      <p id="status" class="status" role="status"></p>
+        <ul id="historyList" class="history-list">
+          <li class="history-item history-empty">Cargando bitácora…</li>
+        </ul>
+      </section>
     </section>
 
     <footer>
