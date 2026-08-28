@@ -1,5 +1,6 @@
 const OWNER = "Anfaliz1703";
 const REPO = "prueba_docentes";
+const AGENT_BRANCH = "copilot/frase-minuto-demo-asincrona";
 const POLL_SECONDS = 30;
 
 const latestQuoteEl = document.getElementById("latestQuote");
@@ -58,65 +59,26 @@ function normalizePayload(payload) {
     .map(parseEntry)
     .filter((entry) => entry.text)
     .sort((a, b) => {
-      if (a.timestamp && b.timestamp) {
-        return new Date(a.timestamp) - new Date(b.timestamp);
-      }
+      if (a.timestamp && b.timestamp) return new Date(a.timestamp) - new Date(b.timestamp);
       return a.seq - b.seq;
     });
 }
 
 async function fetchJson(url) {
-  const response = await fetch(url, {
-    cache: "no-store",
-    headers: { Accept: "application/vnd.github+json" }
-  });
+  const response = await fetch(url, { cache: "no-store" });
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   return response.json();
 }
 
-async function loadMainEntries() {
-  const url = `data/frases.json?t=${Date.now()}`;
-  const payload = await fetchJson(url);
+async function loadAgentEntries() {
+  const rawUrl = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${AGENT_BRANCH}/data/frases.json?t=${Date.now()}`;
+  const payload = await fetchJson(rawUrl);
   return normalizePayload(payload);
 }
 
-async function findAgentBranchEntries() {
-  const pullsUrl = `https://api.github.com/repos/${OWNER}/${REPO}/pulls?state=open&sort=updated&direction=desc&per_page=10&t=${Date.now()}`;
-  const pulls = await fetchJson(pullsUrl);
-
-  const candidates = pulls
-    .filter((pr) => pr?.head?.sha)
-    .sort((a, b) => {
-      const score = (pr) => {
-        const login = String(pr?.user?.login || "").toLowerCase();
-        const ref = String(pr?.head?.ref || "").toLowerCase();
-        const title = String(pr?.title || "").toLowerCase();
-        return (login.includes("copilot") ? 4 : 0) +
-          (ref.includes("copilot") ? 3 : 0) +
-          (title.includes("frase") ? 2 : 0) +
-          (title.includes("asincron") ? 1 : 0);
-      };
-      return score(b) - score(a);
-    });
-
-  for (const pr of candidates) {
-    const rawUrl = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${pr.head.sha}/data/frases.json?t=${Date.now()}`;
-    try {
-      const payload = await fetchJson(rawUrl);
-      const entries = normalizePayload(payload);
-      if (entries.length > 0) {
-        return {
-          entries,
-          source: `PR #${pr.number} · rama del agente`,
-          prNumber: pr.number
-        };
-      }
-    } catch {
-      // El PR puede existir antes de que el agente cree la bitácora.
-    }
-  }
-
-  return null;
+async function loadMainEntries() {
+  const payload = await fetchJson(`data/frases.json?t=${Date.now()}`);
+  return normalizePayload(payload);
 }
 
 function render(entries, source) {
@@ -127,8 +89,8 @@ function render(entries, source) {
   if (!count) {
     latestBadgeEl.textContent = "Esperando";
     latestQuoteEl.textContent = "Aún no hay frases registradas por el agente.";
-    latestMetaEl.textContent = "Cuando Copilot agregue la primera entrada aparecerá aquí con su hora real.";
-    historyListEl.innerHTML = '<li class="empty-state">Esperando la primera acción del agente.</li>';
+    latestMetaEl.textContent = "Cuando Copilot agregue una entrada aparecerá aquí con su hora real.";
+    historyListEl.innerHTML = '<li class="empty-state">Esperando actividad del agente.</li>';
     return;
   }
 
@@ -166,25 +128,24 @@ async function sync() {
   if (isLoading) return;
   isLoading = true;
   refreshNowBtn.disabled = true;
-  syncStatusEl.textContent = "Consultando actividad real en GitHub…";
+  syncStatusEl.textContent = "Leyendo directamente la rama viva del agente…";
 
   try {
-    const mainEntries = await loadMainEntries().catch(() => []);
-    const agentResult = await findAgentBranchEntries().catch(() => null);
-
-    if (agentResult && agentResult.entries.length >= mainEntries.length) {
-      render(agentResult.entries, agentResult.source);
-      syncStatusEl.textContent = "Leyendo directamente la rama activa del agente";
-    } else {
-      render(mainEntries, "main · GitHub Pages");
-      syncStatusEl.textContent = mainEntries.length
-        ? "Mostrando datos ya integrados en main"
-        : "Agente asignado; esperando su primera entrada";
+    let entries;
+    try {
+      entries = await loadAgentEntries();
+      render(entries, "Copilot · rama activa");
+      syncStatusEl.textContent = "Datos en vivo desde la rama de Copilot";
+    } catch (agentError) {
+      entries = await loadMainEntries();
+      render(entries, "main · GitHub Pages");
+      syncStatusEl.textContent = "Rama del agente no disponible; mostrando main";
+      console.warn("No se pudo leer la rama del agente", agentError);
     }
 
     lastSyncEl.textContent = localClock();
   } catch (error) {
-    sourceStatusEl.textContent = "No se pudo consultar GitHub";
+    sourceStatusEl.textContent = "No se pudo cargar la bitácora";
     syncStatusEl.textContent = "Se reintentará automáticamente";
     console.error(error);
   } finally {
@@ -197,11 +158,8 @@ async function sync() {
 
 function tick() {
   secondsLeft -= 1;
-  if (secondsLeft <= 0) {
-    sync();
-  } else {
-    countdownEl.textContent = `${secondsLeft} s`;
-  }
+  if (secondsLeft <= 0) sync();
+  else countdownEl.textContent = `${secondsLeft} s`;
 }
 
 refreshNowBtn.addEventListener("click", sync);
