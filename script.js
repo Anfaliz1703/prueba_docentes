@@ -1,6 +1,6 @@
 const OWNER = "Anfaliz1703";
 const REPO = "prueba_docentes";
-const POLL_SECONDS = 60;
+const POLL_SECONDS = 30;
 
 const latestQuoteEl = document.getElementById("latestQuote");
 const latestMetaEl = document.getElementById("latestMeta");
