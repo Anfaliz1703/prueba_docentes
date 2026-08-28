@@ -3,40 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#111827" />
-  <title>Un minuto para enseñar</title>
-  <meta name="description" content="Una frase para docentes cada minuto." />
+  <meta name="theme-color" content="#0b1020" />
+  <title>Bitácora · Agente Frase Minuto</title>
+  <meta name="description" content="Bitácora pública de las frases agregadas por el agente asíncrono de GitHub Copilot." />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main class="app-shell">
-    <section class="quote-card" aria-live="polite">
-      <div class="eyebrow">UN MINUTO PARA ENSEÑAR</div>
-
-      <div class="quote-mark" aria-hidden="true">“</div>
-      <blockquote id="quote" class="quote">Cargando una idea para docentes…</blockquote>
-      <p id="author" class="author">— Comunidad docente</p>
-
-      <div class="timer-wrap">
-        <div class="timer-label">
-          <span>Siguiente frase</span>
-          <strong id="countdown">60 s</strong>
-        </div>
-        <div class="progress" aria-hidden="true">
-          <div id="progressBar" class="progress-bar"></div>
-        </div>
+    <header class="hero">
+      <div>
+        <p class="eyebrow">GITHUB COPILOT · AGENTE ASÍNCRONO</p>
+        <h1>Bitácora de Frase Minuto</h1>
+        <p class="intro">Esta página no genera frases por sí sola. Solo muestra entradas que existen realmente en <code>data/frases.json</code>.</p>
       </div>
 
-      <div class="actions">
-        <button id="newQuote" class="btn btn-primary" type="button">Otra frase</button>
-        <button id="copyQuote" class="btn btn-secondary" type="button">Copiar</button>
+      <div class="agent-state" aria-live="polite">
+        <span class="pulse" aria-hidden="true"></span>
+        <div>
+          <strong id="sourceStatus">Buscando actividad del agente…</strong>
+          <span id="syncStatus">Sincronizando con GitHub</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="latest-card" aria-live="polite" aria-labelledby="latestTitle">
+      <div class="card-topline">
+        <span id="latestTitle">ÚLTIMA FRASE REGISTRADA</span>
+        <span id="latestBadge" class="badge">Esperando</span>
+      </div>
+      <blockquote id="latestQuote">Aún no hay frases registradas por el agente.</blockquote>
+      <div id="latestMeta" class="latest-meta">Cuando Copilot agregue la primera entrada aparecerá aquí con su hora real.</div>
+    </section>
+
+    <section class="history-section" aria-labelledby="historyTitle">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">EVIDENCIA VERSIONADA</p>
+          <h2 id="historyTitle">Historial de frases agregadas</h2>
+        </div>
+        <span id="entryCount" class="counter">0 frases</span>
       </div>
 
-      <p id="status" class="status" role="status"></p>
+      <ol id="historyList" class="history-list">
+        <li class="empty-state">Esperando la primera acción del agente.</li>
+      </ol>
+    </section>
+
+    <section class="monitor-panel" aria-label="Estado de actualización">
+      <div>
+        <span class="monitor-label">Próxima consulta a GitHub</span>
+        <strong id="countdown">60 s</strong>
+      </div>
+      <div>
+        <span class="monitor-label">Última sincronización</span>
+        <strong id="lastSync">—</strong>
+      </div>
+      <button id="refreshNow" type="button">Actualizar ahora</button>
     </section>
 
     <footer>
-      <span>Una pausa breve. Una idea útil.</span>
+      <span>Repositorio: Anfaliz1703/prueba_docentes · Agente: frase-minuto</span>
     </footer>
   </main>
 
