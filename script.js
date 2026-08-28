@@ -53,3 +53,4 @@ async function loadEntries() {
 }
 
 loadEntries();
+window.setInterval(loadEntries, 30000);
